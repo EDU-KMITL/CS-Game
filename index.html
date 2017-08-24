@@ -1,0 +1,82 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CS Game</title>
+	<link rel="stylesheet" href="dist/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="dist/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<section id="setup-box" class="screen">
+	<!--<div class="panel panel-info">-->
+	<!--<div class="panel-heading">-->
+	<!--การตั้งค่าใช้งาน-->
+	<!--</div>-->
+	<!--<div class="panel-body" align="center">-->
+	<div style="width: 400px;" align="center">
+		<h2>กรุณาระบุชื่อเครื่องและชื่อทีม</h2>
+		<h3>(เป็นภาษาอังกฤษเท่านั้น)</h3>
+		<input id="computerName" name="computer_name" placeholder="ชื่อเครื่อง(Eng)" type="text" class="form-control">
+		<input id="teamName" name="team_name" placeholder="ชื่อทีม(Eng)" type="text" class="form-control">
+		<button id="setup" class="btn btn-primary" style="width: 100%;">เล่นเกม</button>
+		<div id="setup-danger" class="danger">
+		
+		</div>
+	</div>
+	<!--</div>-->
+	
+	<!--</div>-->
+
+
+</section>
+<section id="checkpoint1" class="screen">
+	<div class="pass-container">
+		<h1 id="wait">ใจเย็นๆ รอเพื่อนๆ ก่อนนะครับ ^_^</h1>
+		<div id="ready">
+			<h1>กรุณาระบุรหัสผ่าน</h1>
+			<div class="flex">
+				<div id="pass-box-1" class="pass-box pass-box-1 flex">
+				
+				</div>
+				
+				<div id="pass-box-2" class="pass-box pass-box-2 flex">
+				
+				</div>
+				
+				<div id="pass-box-3" class="pass-box pass-box-3 flex">
+				
+				</div>
+				
+				<div id="pass-box-4" class="pass-box pass-box-4 flex">
+				
+				</div>
+			</div>
+			<h3>รหัสผ่านอยู่ระหว่างตัวเลข 1-4 และไม่ซํ้ากัน</h3>
+		</div>
+	</div>
+</section>
+
+<section id="checkpoint2" class="screen">
+	<div class=checkpoint-container">
+		<div id="clicker-box">
+			<div id="clicker-count">&nbsp;</div>
+		</div>
+		<h1>
+			เอ้า! กด Space bar โดยไว!!
+		</h1>
+	</div>
+</section>
+<section id="checkpoint3" class="screen">
+	<div class=checkpoint-container">
+		<img src="img/kmitl.png" width="500">
+		<h1>นำโทรศัพท์ที่มีแอพมาแสกนภาพ ทีมไหนเสร็จก่อน ชนะ!</h1>
+	</div>
+</section>
+
+<script type="text/javascript" src="dist/jquery.min.js"></script>
+<script type="text/javascript" src="dist/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

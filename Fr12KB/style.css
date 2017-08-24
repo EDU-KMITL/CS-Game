@@ -1,0 +1,22 @@
+.puzzle-table {
+    margin-top: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.p10{
+    padding: 10px;
+}
+
+.puzzle-input{
+    width: 100%;
+    border: none;
+    text-align: center;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.squire-border{
+    border-radius: 0;
+}
