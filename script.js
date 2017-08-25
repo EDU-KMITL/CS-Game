@@ -79,17 +79,17 @@ var clickDown = function (time) {
             $('#clicker-count').css('height', clickerCount + "%");
             updateDb("Checkpoint2/Count", clickerCount);
         }
-        if (clickerCount <= 30) {
-            clearInterval(clickDownInterval);
-        } else if (clickerCount == 80 && level == "m") {
-            level = "h";
-            clearInterval(clickDownInterval);
-            clickDown(50);
-        } else if (clickerCount == 80 && level == "h") {
-            level = "m";
-            clearInterval(clickDownInterval);
-            clickDown(300);
-        }
+        // if (clickerCount <= 30) {
+        //     clearInterval(clickDownInterval);
+        // } else if (clickerCount == 80 && level == "m") {
+        //     level = "h";
+        //     clearInterval(clickDownInterval);
+        //     clickDown(50);
+        // } else if (clickerCount == 80 && level == "h") {
+        //     level = "m";
+        //     clearInterval(clickDownInterval);
+        //     clickDown(300);
+        // }
     }, time);
 
 }
