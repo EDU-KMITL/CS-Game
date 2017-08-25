@@ -140,26 +140,25 @@ var checkTeams = function () {
     }
 }
 
-var closeAllLamp = function() {
-    for(var i = 1 ; i <= 4 ; i++){
-        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/0");
-    }
-}
-
-var openAllLamp = function() {
-    for(var i = 1 ; i <= 4 ; i++){
-        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/1");
+var lamp = function(action,number){
+    var endPoint = (action == "open")? 1 : 0;
+    if(number.toLowerCase() == "all"){
+        for(var i = 1 ; i <= 4 ; i++){
+            $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/"+endPoint);
+        }
+    } else {
+        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+number+"/"+endPoint);
     }
 }
 
 var removeTeams = function() {
     removeDb('Teams');
-    closeAllLamp();
+    lamp("close","all");
     firebase.database().ref("/Setups/Game/IsPlaying").set(false);
 }
 
 var resetValues = function () {
-    closeAllLamp();
+    lamp("close","all");
     var values = {};
     if (teams != null && teams.length != 0) {
         $.each(teams, function (i, team) {
