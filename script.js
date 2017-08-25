@@ -67,7 +67,7 @@ $("#setup").bind('click', function () {
             }
             if(!isValid) {
                 alert("ชื่อเครื่องมีผู้ใช้งานแล้ว!");
-                $('#teamName').val("").focus();
+                $('#computerName').val("").focus();
             }else{
                 firebase.database().ref("Teams/" + teamName + "/" + computerName).set(comState);
                 isSetup = true;
