@@ -48,7 +48,8 @@ $("#setup").bind('click', function () {
     $('#setup-danger').text('');
     computerName = $('#computerName').val().replace(" ", "_");
     teamName = $('#teamName').val().replace(" ", "_");
-
+    $('#computerName').val(computerName);
+    $('#teamName').val(teamName);
     if (computerName != "" && teamName != "" && onlyAlphabets(computerName) && onlyAlphabets(teamName)) {
 
         var isValid = false;
@@ -66,7 +67,7 @@ $("#setup").bind('click', function () {
             }
             if(!isValid) {
                 alert("ชื่อเครื่องมีผู้ใช้งานแล้ว!");
-                computerName = "";
+                $('#teamName').val("").focus();
             }else{
                 firebase.database().ref("Teams/" + teamName + "/" + computerName).set(comState);
                 isSetup = true;
@@ -79,8 +80,7 @@ $("#setup").bind('click', function () {
         $('#setup-danger').text('กรุณาระบุข้อมูลให้ถูกต้อง');
     }
 
-    $('#computerName').val(computerName);
-    $('#teamName').val(teamName);
+
 });
 
 //Password Screen
