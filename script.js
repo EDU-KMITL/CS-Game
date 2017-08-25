@@ -7,7 +7,9 @@ var passAns = null,
     currentPage = null,
     clickerCount = 0,
     clickerDown = false,
-    state = {};
+    comState = {};
+    teamState = {};
+    
 
 
 //Firebase Config
@@ -47,9 +49,9 @@ $("#setup").bind('click', function () {
     $('#teamName').val(teamName);
     if (computerName != "" && teamName != "" && onlyAlphabets(computerName) && onlyAlphabets(teamName)) {
         dbRef();
-        firebase.database().ref("Teams/" + teamName + "/" + computerName).set(state);
+        firebase.database().ref("Teams/" + teamName + "/" + computerName).set(comState);
         isSetup = true;
-        $('.user').find("div").html("Team: "+teamName+", Computer: "+computerName).fadeIn();
+        $('.user').find("div").html("Team: "+teamName+", Computer: "+computerName).slideDown();
         changePage("#checkpoint1");
     } else {
         $('#setup-danger').text('กรุณาระบุข้อมูลให้ถูกต้อง');
@@ -99,28 +101,27 @@ var updateDb = function (url, value) {
 }
 
 var dbRef = function () {
-    var db = firebase.database().ref("Teams/" + teamName + "/" + computerName);
+    var db = firebase.database().ref("Teams/" + teamName);
     db.on('value', function (snapshot) {
-        state = snapshot.val();
-        if (state == null) {
-            $('#computerName').val("");
-            $('#teamName').val("");
-            computerName = null;
-            teamName = null;
+        var valueSnapshot = snapshot.val();
+        if(valueSnapshot === null){
             isSetup = false;
             clearState();
-        } else if (state.Status) {
-            passAns = state.Checkpoint1.password;
-            $('#wait').slideUp();
-            $('#ready').slideDown();
+            $(".user").find("div").slideUp();
         } else {
-            $('#wait').slideDown();
-            $('#ready').slideUp();
-            clearState();
+            comState = valueSnapshot[computerName];
+            if (comState.Status) {
+                passAns = comState.Checkpoint1.password;
+                $('#wait').slideUp();
+                $('#ready').slideDown();
+            } else {
+                $('#wait').slideDown();
+                $('#ready').slideUp();
+                clearState();
+            }
+            var puzzleImg = (comState.Checkpoint3.Image != null)? comState.Checkpoint3.Image : "img/kmitl.png";
+            $("#puzzle-img").attr("src",puzzleImg);
         }
-
-        var puzzleImg = (state.Checkpoint3.Image != null)? state.Checkpoint3.Image : "img/kmitl.png";
-        $("#puzzle-img").attr("src",puzzleImg);
     });
 }
 
@@ -137,7 +138,7 @@ var clearState = function () {
     passKey = [];
     clickerCount = 0;
     clickerDown = false;
-    state = {
+    comState = {
         Status: false,
         Checkpoint1: {
             password: "",
@@ -154,7 +155,7 @@ var clearState = function () {
     };
     passAns = null;
 
-    if (!state.status) {
+    if (!comState.status) {
         $('#wait').show();
         $('#ready').hide();
     } else {
@@ -178,7 +179,7 @@ $(document).ready(function () {
 
 
     $('html').bind('keypress', function (e) {
-        if (e.keyCode >= 48 && e.keyCode <= 57 && currentPage == "#checkpoint1" && state.Status) {
+        if (e.keyCode >= 48 && e.keyCode <= 57 && currentPage == "#checkpoint1" && comState.Status) {
             passKeyUp(e.keyCode);
             if (passKey.length == 4) {
                 if (passKey.join("") == passAns) {
@@ -192,7 +193,7 @@ $(document).ready(function () {
     });
 
     $('html').bind('keyup', function (e) {
-        if (e.keyCode == 32 && currentPage == "#checkpoint2" && state.Status) {
+        if (e.keyCode == 32 && currentPage == "#checkpoint2" && comState.Status) {
             if (clickerCount < 100) {
                 clickerCount++;
                 $('#clicker-count').css('height', clickerCount + "%");

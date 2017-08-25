@@ -8,38 +8,68 @@
 </head>
 <body>
 <div class="container">
+	
+	<div id="success" onclick="$(this).slideUp();" class="message-text message-success flex">
+		asdfasdfads
+	</div>
+	<div id="error" onclick="$(this).slideUp();" class="message-text message-error flex">
+		sdfsdf
+	</div>
+	
 	<div style="text-align: center;">
-		<button onclick="if(confirm('คุณต้องการลบทุกทีมอย่างถาวรหรือไม่?')) removeDb('Teams');" class="btn btn-danger" style="margin: 20px;">Delete All Teams</button>
-		<button onclick="if(confirm('คุณต้องการ Reset เป็นค่าเริ่มต้นหรือไม่?')) resetValues();" class="btn btn-warning" style="margin: 20px;">Reset Value</button>
-		<button onclick="if(confirm('คุณต้องการเริ่มเกมหรือไม่?')) startGame();" class="btn btn-success" style="margin: 20px;">Start Game</button>
+		<button onclick="if(confirm('คุณต้องการลบทุกทีมอย่างถาวรหรือไม่?')) removeTeams();" class="btn btn-danger"
+		        style="margin: 20px;">Delete All Teams
+		</button>
+		<button id="resetValue" onclick="if(confirm('คุณต้องการ Reset เป็นค่าเริ่มต้นหรือไม่?')) resetValues();" class="btn btn-warning"
+		        style="margin: 20px;">Reset Value
+		</button>
+		<button id="startGame" onclick="if(confirm('คุณต้องการเริ่มเกมหรือไม่?')) startGame();" class="btn btn-success"
+		        style="margin: 20px;">Start Game
+		</button>
 	</div>
-	<h1>Puzzle Bombs</h1>
-	<div id="puzzle-bomb" style="text-align: center;">
-		<table border="1" class="puzzle-table tabel" align="center">
-			<tbody id="puzzle-bomb-container">
-			</tbody>
-			<tfoot>
-			<tr>
-				<th colspan="2"><input onchange="updateDb('Setups/Bombs/'+setups.Bombs.length,$(this).val()); $(this).val('');" class="puzzle-input" type="text"></th>
-			</tr>
-			</tfoot>
-		</table>
-	</div>
-	<h1>Puzzles</h1>
-	<table border="1" class="puzzle-table tabel" align="center">
-		<tbody>
-		<tr>
-			<th width="100">
-				<div>Answer:</div>
-			</th>
-			<th>
-				<input onchange="updateDb('Setups/Puzzles/'+setups.Puzzles.length+'/Answer',$(this).val()); $(this).val('');"
-				       placeholder="เพิ่มคำตอบ" class="puzzle-input" type="text">
-			</th>
-		</tr>
-		</tbody>
-	</table>
-	<div id="puzzle-container" style="text-align: center;">
+	<ul class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#team-tab">Team</a></li>
+		<li><a data-toggle="tab" href="#puzzle-tab">Puzzle</a></li>
+	</ul>
+	<div class="tab-content">
+		<div id="puzzle-tab" class="tab-pane fade in ">
+			<h1>Puzzle Bombs</h1>
+			<div id="puzzle-bomb" style="text-align: center;">
+				<table border="1" class="puzzle-table tabel" align="center">
+					<tbody id="puzzle-bomb-container">
+					</tbody>
+					<tfoot>
+					<tr>
+						<th colspan="2"><input
+								onchange="updateDb('Setups/Bombs/'+setups.Bombs.length,$(this).val()); $(this).val('');"
+								class="puzzle-input" type="text"></th>
+					</tr>
+					</tfoot>
+				</table>
+			</div>
+			<h1>Puzzles</h1>
+			<table border="1" class="puzzle-table tabel" align="center">
+				<tbody>
+				<tr>
+					<th width="100">
+						<div>Answer:</div>
+					</th>
+					<th>
+						<input onchange="updateDb('Setups/Puzzles/'+setups.Puzzles.length+'/Answer',$(this).val()); $(this).val('');"
+						       placeholder="เพิ่มคำตอบ" class="puzzle-input" type="text">
+					</th>
+				</tr>
+				</tbody>
+			</table>
+			<div id="puzzle-container" style="text-align: center;">
+			</div>
+		</div>
+		<div id="team-tab" class="tab-pane fade in active">
+			<h1>Team</h1>
+			<div id="teams-setup">
+			
+			</div>
+		</div>
 	</div>
 
 

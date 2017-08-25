@@ -1,3 +1,9 @@
+.flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .puzzle-table {
     margin-top: 20px;
     width: 100%;
@@ -20,3 +26,95 @@
 .squire-border{
     border-radius: 0;
 }
+
+.tab-pane{
+    border: 1px solid #ddd;
+    border-top: none;
+    overflow: hidden;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.nav-tabs{
+    margin-bottom: 0;
+}
+
+.team-detail{
+    padding: 15px;
+    border: 1px #000 solid;
+    margin-bottom: 10px;
+}
+.led-container{
+    display: inline-block;
+}
+
+.led-btn{
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    position: relative;
+    margin-left:10px;
+}
+
+.led-1{
+    background: lightgreen;
+    border: none;
+}
+
+.led-2{
+    background: yellow;
+    border: none;
+}
+
+.led-3{
+    background: orangered;
+    border: none;
+}
+
+.led-4{
+    background: red;
+    border: none;
+}
+
+.led-selected-1{
+    background: lightgreen;
+}
+
+.led-selected-2{
+    background: yellow;
+}
+
+.led-selected-3{
+    background: orangered;
+}
+
+.led-selected-4{
+    background: red;
+}
+
+.glyphicon-let{
+    position: absolute;
+    color: black;
+    top: 0;
+    left: 0;
+}
+
+.message-text{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    font-size: 1.5em;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.message-success{
+    background: green;
+}
+.message-error{
+    background: red;
+}
+

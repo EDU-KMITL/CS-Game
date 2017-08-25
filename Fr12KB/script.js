@@ -13,12 +13,38 @@ var config = {
 };
 firebase.initializeApp(config);
 
+var message = function (mg, type) {
+    $('#' + type).clone().text(mg).insertBefore($('#' + type)).slideDown();
+}
+
+var success = function (mg) {
+    message(mg, "success");
+}
+
+var error = function (mg) {
+    message(mg, "error");
+}
+
+
 var updateDb = function (url, value) {
-    firebase.database().ref(url).set(value);
+    try {
+        firebase.database().ref(url).set(value);
+        success("อัพเดทฐานข้อมูลแล้ว!")
+    } catch (err) {
+        error("อัพเดทฐานข้อมูลไม่สำเร็จ");
+        console.log(err);
+    }
+
 }
 
 var removeDb = function (url) {
-    firebase.database().ref(url).remove();
+    try {
+        firebase.database().ref(url).remove();
+        success("ลบข้อมูลแล้ว!")
+    } catch (err) {
+        error("ลบข้อมูลไม่สำเร็จ");
+        console.log(err);
+    }
 }
 
 var checkPuzzle = function () {
@@ -53,7 +79,9 @@ var checkPuzzle = function () {
                 "</tr>";
             html += "</table>";
         });
-        $("#puzzle-container").html(html);
+        if ($("#puzzle-container").html() != html) {
+            $("#puzzle-container").html(html);
+        }
     } else {
         setups.Puzzles = [];
         $("#puzzle-container").html("");
@@ -73,7 +101,9 @@ var checkPuzzle = function () {
                 "</tr>";
             html += "";
         });
-        $("#puzzle-bomb-container").html(html);
+        if ($("#puzzle-bomb-container").html() != html) {
+            $("#puzzle-bomb-container").html(html);
+        }
     } else {
         setups.Bombs = [];
         $("#puzzle-bomb-container").html("");
@@ -82,17 +112,67 @@ var checkPuzzle = function () {
 
 }
 
+var checkTeams = function () {
+    var html = "";
+    if (teams != null) {
+        $.each(teams, function (index, items) {
+            var puzzleAns = (setups.Puzzles[items.Puzzles] != null) ? setups.Puzzles[items.Puzzles].Answer : "Not Ready";
+            var led = (items.State != null) ? items.State.Led : null;
+            html += "<div class=\"team-detail led-selected-" + led + "\">" +
+                "Name: <b>" + index + "</b>, " +
+                "Puzzle: " + puzzleAns + "," +
+                "Color:";
+            for (var i = 1; i <= 4; i++) {
+                html += "<button class=\"led-btn led-" + i + "\" onclick='updateDb(\"Teams/" + index + "/State/Led\"," + i + ");'>";
+                if (led == i)
+                    html +=
+                        "<span class=\"glyphicon glyphicon-let glyphicon-ok\"></span>";
+                html += "</button>";
+            }
+
+            html +=
+                "</div>" +
+                "</div>";
+        });
+    }
+    if ($("#teams-setup").html() != html) {
+        $("#teams-setup").html(html);
+    }
+}
+
+var closeAllLamp = function() {
+    for(var i = 1 ; i <= 4 ; i++){
+        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/0");
+    }
+}
+
+var openAllLamp = function() {
+    for(var i = 1 ; i <= 4 ; i++){
+        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/1");
+    }
+}
+
+var removeTeams = function() {
+    removeDb('Teams');
+    closeAllLamp();
+    firebase.database().ref("/Setups/Game/IsPlaying").set(false);
+}
+
 var resetValues = function () {
+    closeAllLamp();
     var values = {};
     if (teams != null && teams.length != 0) {
         $.each(teams, function (i, team) {
             values[i] = team;
+            var led = (team.State.Led != null) ? team.State.Led : null;
             $.each(team, function (j, com) {
                 var dateReset = (j == "State") ?
                     {
                         Checkpoint4: false,
                         IsPlaying: false,
-                        Place: 0
+                        Place: 0,
+                        Puzzle: "",
+                        Led: led,
                     } :
                     {
                         Status: false,
@@ -113,6 +193,7 @@ var resetValues = function () {
             });
         });
         updateDb('/Teams', values);
+        firebase.database().ref("/Setups/Game/IsPlaying").set(false);
     }
 
 }
@@ -169,9 +250,12 @@ var startGame = function () {
     var values = {};
     var puzzleCount = setups.Puzzles.length;
     var puzzleSelected = [];
+    var isValid = true;
+
     if (teams != null && teams.length != 0) {
         if (teams.length > puzzleCount) {
             alert("รหัสปริศนาไม่เพียงพอต่อกลุ่มผู้เล่น");
+            isValid = false;
             return false;
         } else {
             $.each(teams, function (i, team) {
@@ -200,6 +284,7 @@ var startGame = function () {
 
                 if (comCount < argenCount) {
                     alert("สมาชิกในกลุ่มน้อยเกินกว่ารหัสภาพ AR Gen กรุณาเพิ่มสมาชิกในกลุ่มให้มากกว่า " + argenCount + " คน");
+                    isValid = false;
                     return false;
                 } else if (comCount > argenCount) {
                     for (var x = 0; x < comCount - argenCount; x++) {
@@ -212,7 +297,8 @@ var startGame = function () {
                         {
                             Checkpoint4: false,
                             IsPlaying: true,
-                            Place: 0
+                            Place: 0,
+                            Puzzle: puzzleNumber
                         } :
                         {
                             Status: true,
@@ -225,7 +311,6 @@ var startGame = function () {
                                 Status: false
                             },
                             Checkpoint3: {
-                                Puzzle: puzzleNumber,
                                 Image: argens.pop(),
                                 Status: false
                             }
@@ -233,18 +318,32 @@ var startGame = function () {
                     values[i][j] = dateReset;
                 });
             });
-            firebase.database().ref("/Teams").set(values);
+            if (isValid) {
+                firebase.database().ref("/Teams").set(values);
+                firebase.database().ref("/Setups/Game/IsPlaying").set(true);
+            }
+            ;
         }
+    } else {
+        alert("กรุณาเพิ่มทีมหรือเพิ่มปริศนาก่อน");
     }
 }
 
+
 $(document).ready(function (e) {
+    $('.message-text').hide();
     var db = firebase.database().ref("/");
     db.on('value', function (snapshot) {
         data = snapshot.val();
         setups = data.Setups;
         teams = data.Teams;
         checkPuzzle();
+        checkTeams();
+        if(setups.Game.IsPlaying){
+            $('#startGame').text("Playing...").attr("disabled",true);
+        } else {
+            $('#startGame').text("Start Game").removeAttr("disabled");
+        }
     });
 
 });
