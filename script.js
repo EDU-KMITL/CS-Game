@@ -7,8 +7,7 @@ var passAns = null,
     currentPage = null,
     clickerCount = 0,
     clickerDown = false,
-    state = {},
-    clickerDownInterval = null;
+    state = {};
 
 
 //Firebase Config
@@ -23,10 +22,15 @@ var config = {
 firebase.initializeApp(config);
 
 var changePage = function (page) {
-    window.location.hash = page;
-    currentPage = page;
-    $('.screen').fadeOut();
-    $(page).fadeIn();
+    if (window.location.hash != page || window.location.hash == "") {
+        window.location.hash = page;
+        currentPage = page;
+        $('.screen').fadeOut();
+        $(page).fadeIn();
+    } else {
+        $(page).show();
+    }
+
 }
 
 //Setup Screen
@@ -37,14 +41,15 @@ function onlyAlphabets(t) {
 
 $("#setup").bind('click', function () {
     $('#setup-danger').text('');
-    computerName = $('#computerName').val().replace(/\s+/g,"_");
-    teamName = $('#teamName').val().replace(/\s+/g,"_");
+    computerName = $('#computerName').val().replace();
+    teamName = $('#teamName').val().replace();
     $('#computerName').val(computerName);
     $('#teamName').val(teamName);
     if (computerName != "" && teamName != "" && onlyAlphabets(computerName) && onlyAlphabets(teamName)) {
         firebase.database().ref("Teams/" + teamName + "/" + computerName).set(state);
         dbRef();
         isSetup = true;
+        $('.user').find("div").html("Team: "+teamName+", Computer: "+computerName).fadeIn();
         changePage("#checkpoint1");
     } else {
         $('#setup-danger').text('กรุณาระบุข้อมูลให้ถูกต้อง');
@@ -66,7 +71,7 @@ var clearPass = function () {
 }
 
 var clickDown = function () {
-    clickerDownInterval = setInterval(function () {
+    setInterval(function () {
         if (clickerCount > 0 && clickerCount < 100) {
             clickerCount--;
             $('#clicker-count').css('height', clickerCount + "%");
@@ -83,12 +88,13 @@ var dbRef = function () {
     var db = firebase.database().ref("Teams/" + teamName + "/" + computerName);
     db.on('value', function (snapshot) {
         state = snapshot.val();
-        if(state == null){
+        if (state == null) {
             computerName = null;
             teamName = null;
             isSetup = false;
             clearState();
         } else if (state.Status) {
+            passAns = state.Checkpoint1.password;
             $('#wait').slideUp();
             $('#ready').slideDown();
         } else {
@@ -103,20 +109,20 @@ var dbRef = function () {
 //Clear State
 
 var clearState = function () {
-    if(!isSetup){
+    if (!isSetup) {
         changePage("#setup-box");
-    } else if(currentPage != "#checkpoint1" && currentPage != "#setup-box" && currentPage != ""){
+    } else if (currentPage != "#checkpoint1" && currentPage != "#setup-box" && currentPage != "") {
         changePage("#checkpoint1");
     }
-    clearInterval(clickerDownInterval);
-    passAns = 1234;
+
+
     passKey = [];
     clickerCount = 0;
     clickerDown = false;
     state = {
         Status: false,
         Checkpoint1: {
-            password: null,
+            password: "",
             Status: false
         },
         Checkpoint2: {
@@ -124,15 +130,11 @@ var clearState = function () {
             Status: false
         },
         Checkpoint3: {
-            image: null,
-            Status: false
-        },
-        Checkpoint4: {
+            image: "",
             Status: false
         }
     };
-
-
+    passAns = null;
 
     if (!state.status) {
         $('#wait').show();
@@ -148,13 +150,13 @@ var clearState = function () {
 }
 //Check Page
 $(document).ready(function () {
-    currentPage = window.location.hash;
     clearState();
     $('.screen').hide();
     if (currentPage != "" && currentPage != "#setup-box") {
         changePage(window.location.hash);
+    } else {
+        changePage("#setup-box");
     }
-
 
 
     $('html').bind('keypress', function (e) {

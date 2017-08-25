@@ -9,9 +9,9 @@
 <body>
 <div class="container">
 	<div style="text-align: center;">
-		<button class="btn btn-danger" style="margin: 20px;">Delete All Teams</button>
-		<button class="btn btn-warning" style="margin: 20px;">Reset Value</button>
-		<button class="btn btn-success" style="margin: 20px;">Start Game</button>
+		<button onclick="if(confirm('คุณต้องการลบทุกทีมอย่างถาวรหรือไม่?')) removeDb('Teams');" class="btn btn-danger" style="margin: 20px;">Delete All Teams</button>
+		<button onclick="if(confirm('คุณต้องการ Reset เป็นค่าเริ่มต้นหรือไม่?')) resetValues();" class="btn btn-warning" style="margin: 20px;">Reset Value</button>
+		<button onclick="if(confirm('คุณต้องการเริ่มเกมหรือไม่?')) startGame();" class="btn btn-success" style="margin: 20px;">Start Game</button>
 	</div>
 	<h1>Puzzle Bombs</h1>
 	<div id="puzzle-bomb" style="text-align: center;">
@@ -20,7 +20,7 @@
 			</tbody>
 			<tfoot>
 			<tr>
-				<th colspan="2"><input onchange="updateDb('Bombs/'+setups.Bombs.length,$(this).val()); $(this).val('');" class="puzzle-input" type="text"></th>
+				<th colspan="2"><input onchange="updateDb('Setups/Bombs/'+setups.Bombs.length,$(this).val()); $(this).val('');" class="puzzle-input" type="text"></th>
 			</tr>
 			</tfoot>
 		</table>
@@ -33,7 +33,7 @@
 				<div>Answer:</div>
 			</th>
 			<th>
-				<input onchange="updateDb('Puzzles/'+setups.Puzzles.length+'/Answer',$(this).val()); $(this).val('');"
+				<input onchange="updateDb('Setups/Puzzles/'+setups.Puzzles.length+'/Answer',$(this).val()); $(this).val('');"
 				       placeholder="เพิ่มคำตอบ" class="puzzle-input" type="text">
 			</th>
 		</tr>
