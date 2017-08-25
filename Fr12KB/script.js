@@ -88,21 +88,28 @@ var resetValues = function () {
         $.each(teams, function (i, team) {
             values[i] = team;
             $.each(team, function (j, com) {
-                values[i][j] = {
-                    Status: false,
-                    Checkpoint1: {
-                        password: null,
-                        Status: false
-                    },
-                    Checkpoint2: {
-                        Count: 0,
-                        Status: false
-                    },
-                    Checkpoint3: {
-                        image: null,
-                        Status: false
-                    }
-                };
+                var dateReset = (j == "State") ?
+                    {
+                        Checkpoint4: false,
+                        IsPlaying: false,
+                        Place: 0
+                    } :
+                    {
+                        Status: false,
+                        Checkpoint1: {
+                            password: "",
+                            Status: false
+                        },
+                        Checkpoint2: {
+                            Count: 0,
+                            Status: false
+                        },
+                        Checkpoint3: {
+                            image: "",
+                            Status: false
+                        }
+                    };
+                values[i][j] = dateReset;
             });
         });
         updateDb('/Teams', values);
@@ -111,6 +118,7 @@ var resetValues = function () {
 }
 
 var uniqueRandoms = [];
+
 function makeUniqueRandom(numRandoms) {
 
     // refill the array if needed
@@ -130,6 +138,7 @@ function makeUniqueRandom(numRandoms) {
 }
 
 var uniqueRandomsPassword = [];
+
 function makeUniqueRandomPassword(numRandoms) {
 
     // refill the array if needed
@@ -151,7 +160,7 @@ function makeUniqueRandomPassword(numRandoms) {
 function makePassword() {
     var result = [];
     for (var j = 0; j < 4; j++) {
-        result.push(makeUniqueRandomPassword(4)+1);
+        result.push(makeUniqueRandomPassword(4) + 1);
     }
     return result.join("");
 }
@@ -161,16 +170,16 @@ var startGame = function () {
     var puzzleCount = setups.Puzzles.length;
     var puzzleSelected = [];
     if (teams != null && teams.length != 0) {
-        if(teams.length > puzzleCount){
+        if (teams.length > puzzleCount) {
             alert("รหัสปริศนาไม่เพียงพอต่อกลุ่มผู้เล่น");
             return false;
         } else {
             $.each(teams, function (i, team) {
                 values[i] = team;
                 var comCount = Object.keys(team).length;
-                var randomUniqPuzzle = function(){
-                    var rannnnn = Math.floor(Math.random()*puzzleCount);
-                    if(puzzleSelected.indexOf(rannnnn) > -1){
+                var randomUniqPuzzle = function () {
+                    var rannnnn = Math.floor(Math.random() * puzzleCount);
+                    if (puzzleSelected.indexOf(rannnnn) > -1) {
                         return randomUniqPuzzle();
                     } else {
                         puzzleSelected.push(rannnnn);
@@ -189,32 +198,39 @@ var startGame = function () {
                 var argens = setups.Puzzles[puzzleNumber].ARGens;
 
 
-                if(comCount < argenCount){
-                    alert("สมาชิกในกลุ่มน้อยเกินกว่ารหัสภาพ AR Gen กรุณาเพิ่มสมาชิกในกลุ่มให้มากกว่า "+argenCount+" คน");
+                if (comCount < argenCount) {
+                    alert("สมาชิกในกลุ่มน้อยเกินกว่ารหัสภาพ AR Gen กรุณาเพิ่มสมาชิกในกลุ่มให้มากกว่า " + argenCount + " คน");
                     return false;
-                } else if(comCount > argenCount) {
-                    for(var x = 0 ; x < comCount - argenCount ; x++){
+                } else if (comCount > argenCount) {
+                    for (var x = 0; x < comCount - argenCount; x++) {
                         argens.push(bombs[makeUniqueRandom(bombCount)]);
                     }
                 }
 
                 $.each(team, function (j, com) {
-                    values[i][j] = {
-                        Status: true,
-                        Checkpoint1: {
-                            password: makePassword(),
-                            Status: false
-                        },
-                        Checkpoint2: {
-                            Count: 0,
-                            Status: false
-                        },
-                        Checkpoint3: {
-                            Puzzle: puzzleNumber,
-                            Image: argens.pop(),
-                            Status: false
-                        }
-                    };
+                    var dateReset = (j == "State") ?
+                        {
+                            Checkpoint4: false,
+                            IsPlaying: true,
+                            Place: 0
+                        } :
+                        {
+                            Status: true,
+                            Checkpoint1: {
+                                password: makePassword(),
+                                Status: false
+                            },
+                            Checkpoint2: {
+                                Count: 0,
+                                Status: false
+                            },
+                            Checkpoint3: {
+                                Puzzle: puzzleNumber,
+                                Image: argens.pop(),
+                                Status: false
+                            }
+                        };
+                    values[i][j] = dateReset;
                 });
             });
             firebase.database().ref("/Teams").set(values);

@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="dist/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="dist/bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="user">
@@ -19,8 +20,9 @@
 	<div style="width: 400px;" align="center">
 		<h2>กรุณาระบุชื่อเครื่องและชื่อทีม</h2>
 		<h3>(เป็นภาษาอังกฤษเท่านั้น)</h3>
-		<input id="computerName" name="computer_name" placeholder="ชื่อเครื่อง(Eng)" type="text" class="form-control">
 		<input id="teamName" name="team_name" placeholder="ชื่อทีม(Eng)" type="text" class="form-control">
+		<input id="computerName" name="computer_name" placeholder="ชื่อเครื่อง(Eng)" type="text" class="form-control">
+		
 		<button id="setup" class="btn btn-primary" style="width: 100%;">เล่นเกม</button>
 		<div id="setup-danger" class="danger">
 		
@@ -71,7 +73,7 @@
 </section>
 <section id="checkpoint3" class="screen">
 	<div class=checkpoint-container">
-		<img src="img/kmitl.png" width="500">
+		<img id="puzzle-img" src="img/kmitl.png" width="500">
 		<h1>นำโทรศัพท์ที่มีแอพมาแสกนภาพ ทีมไหนเสร็จก่อน ชนะ!</h1>
 	</div>
 </section>
