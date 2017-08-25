@@ -105,6 +105,9 @@ section#checkpoint2{
     color: #ffffff;
     text-shadow: #000 0 0 15px;
 }
+section#success{
+    background-image: url(img/002.jpg);
+}
 
 #clicker-box{
     height: 400px;
@@ -141,4 +144,13 @@ section#checkpoint2{
     background-color: rgba(255,255,255,0.5);
     font-size: 1.3em;
     display: none;
+}
+.puzzle-ans{
+    text-align: center;
+    background: lightgreen;
+}
+
+.success-container{
+    background-color: rgba(255,255,255,0.8);
+    padding: 20px;
 }

@@ -140,17 +140,6 @@ var checkTeams = function () {
     }
 }
 
-var lamp = function(action,number){
-    var endPoint = (action == "open")? 1 : 0;
-    if(number.toLowerCase() == "all"){
-        for(var i = 1 ; i <= 4 ; i++){
-            $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/"+endPoint);
-        }
-    } else {
-        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+number+"/"+endPoint);
-    }
-}
-
 var removeTeams = function() {
     removeDb('Teams');
     lamp("close","all");
@@ -163,7 +152,7 @@ var resetValues = function () {
     if (teams != null && teams.length != 0) {
         $.each(teams, function (i, team) {
             values[i] = team;
-            var led = (team.State.Led != null) ? team.State.Led : null;
+            var led = (team.State != null) ? team.State.Led : null;
             $.each(team, function (j, com) {
                 var dateReset = (j == "State") ?
                     {
@@ -259,6 +248,12 @@ var startGame = function () {
         } else {
             $.each(teams, function (i, team) {
                 values[i] = team;
+
+                if(team.State == null){
+                    alert("กรุณาเลือกสีของทีมให้เรียบร้อย");
+                    isValid = false;
+                    return false;
+                }
                 var comCount = Object.keys(team).length;
                 var randomUniqPuzzle = function () {
                     var rannnnn = Math.floor(Math.random() * puzzleCount);
@@ -297,7 +292,8 @@ var startGame = function () {
                             Checkpoint4: false,
                             IsPlaying: true,
                             Place: 0,
-                            Puzzle: puzzleNumber
+                            Puzzle: puzzleNumber,
+                            Led: (team.State != null) ? team.State.Led : 0
                         } :
                         {
                             Status: true,

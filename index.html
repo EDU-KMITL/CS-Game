@@ -61,7 +61,7 @@
 </section>
 
 <section id="checkpoint2" class="screen">
-	<div class=checkpoint-container">
+	<div class="checkpoint-container">
 		<div id="clicker-box">
 			<div id="clicker-count">&nbsp;</div>
 		</div>
@@ -71,16 +71,24 @@
 	</div>
 </section>
 <section id="checkpoint3" class="screen">
-	<div class=checkpoint-container">
+	<div class="checkpoint-container">
 		<img id="puzzle-img" src="img/kmitl.png" width="500">
-		<h1>นำโทรศัพท์ที่มีแอพมาแสกนภาพ ทีมไหนเสร็จก่อน ชนะ!</h1>
+		<h1>นำโทรศัพท์ที่มีแอพมาแสกนภาพ แล้วถอดรหัสที่ได้นำมาตอบที่นี่</h1>
+		<input id="puzzle-ans" placeholder="พิมพ์คำตอบแล้วกด Enter" type="text" class="puzzle-ans form-control input-lg" onchange="checkPuzzleAns(this);">
 	</div>
 </section>
 
+<section id="success" class="screen">
+	<div class="checkpoint-container success-container">
+		<h1>ภารกิจเสร็จสิ้น!</h1>
+		<h1>You are <span id="place-number"></span></h1>
+	</div>
+</section>
 <script type="text/javascript" src="dist/jquery.min.js"></script>
 <script type="text/javascript" src="dist/bootstrap/js/bootstrap.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+<script type="text/javascript" src="dist/lamp.js"></script>
 <script type="text/javascript" src="script.js"></script>
 </body>
 </html>

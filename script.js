@@ -7,9 +7,11 @@ var passAns = null,
     currentPage = null,
     clickerCount = 0,
     clickerDown = false,
-    comState = {};
-    teamState = {};
-    
+    comState = null,
+    teamState = null,
+    puzzleState = null,
+    clickDownInterval,
+    dbDetail = null;
 
 
 //Firebase Config
@@ -29,6 +31,7 @@ var changePage = function (page) {
         currentPage = page;
         $('.screen').fadeOut();
         $(page).fadeIn();
+
     } else {
         $(page).show();
     }
@@ -43,19 +46,41 @@ function onlyAlphabets(t) {
 
 $("#setup").bind('click', function () {
     $('#setup-danger').text('');
-    computerName = $('#computerName').val().replace(" ","_");
-    teamName = $('#teamName').val().replace(" ","_");
-    $('#computerName').val(computerName);
-    $('#teamName').val(teamName);
+    computerName = $('#computerName').val().replace(" ", "_");
+    teamName = $('#teamName').val().replace(" ", "_");
+
     if (computerName != "" && teamName != "" && onlyAlphabets(computerName) && onlyAlphabets(teamName)) {
-        dbRef();
-        firebase.database().ref("Teams/" + teamName + "/" + computerName).set(comState);
-        isSetup = true;
-        $('.user').find("div").html("Team: "+teamName+", Computer: "+computerName).slideDown();
-        changePage("#checkpoint1");
+
+        var isValid = false;
+        if (dbDetail != null) {
+            if(dbDetail.Teams != null) {
+                if (dbDetail.Teams[teamName] != null) {
+                    if (dbDetail.Teams[teamName][computerName] == null) {
+                        isValid = true;
+                    }
+                } else {
+                    isValid = true;
+                }
+            } else {
+                isValid = true;
+            }
+            if(!isValid) {
+                alert("ชื่อเครื่องมีผู้ใช้งานแล้ว!");
+                computerName = "";
+            }else{
+                firebase.database().ref("Teams/" + teamName + "/" + computerName).set(comState);
+                isSetup = true;
+                $('.user').find("div").html("Team: " + teamName + ", Computer: " + computerName).slideDown();
+                changePage("#checkpoint1");
+                isValid  = false;
+            }
+        }
     } else {
         $('#setup-danger').text('กรุณาระบุข้อมูลให้ถูกต้อง');
     }
+
+    $('#computerName').val(computerName);
+    $('#teamName').val(teamName);
 });
 
 //Password Screen
@@ -74,7 +99,7 @@ var clearPass = function () {
 
 var level = "l";
 var clickDown = function (time) {
-    var clickDownInterval = setInterval(function () {
+    clickDownInterval = setInterval(function () {
         if (clickerCount > 0 && clickerCount < 100) {
             level = "m";
             clickerCount--;
@@ -100,27 +125,70 @@ var updateDb = function (url, value) {
     firebase.database().ref("Teams/" + teamName + "/" + computerName + "/" + url).set(value);
 }
 
+var checkPuzzleAns = function (input) {
+    if ($(input).val().trim() == puzzleState.Answer.trim()) {
+        lamp("open", teamState.State.Led);
+        firebase.database().ref("Teams/" + teamName + "/State/Checkpoint4").set(true);
+        $(input).val("");
+    } else {
+        $(input).val("");
+    }
+}
+
+
 var dbRef = function () {
-    var db = firebase.database().ref("Teams/" + teamName);
+    var db = firebase.database().ref("/");
     db.on('value', function (snapshot) {
         var valueSnapshot = snapshot.val();
-        if(valueSnapshot === null){
+        dbDetail = valueSnapshot;
+        if (valueSnapshot.Teams == null) {
             isSetup = false;
             clearState();
             $(".user").find("div").slideUp();
         } else {
-            comState = valueSnapshot[computerName];
-            if (comState.Status) {
-                passAns = comState.Checkpoint1.password;
-                $('#wait').slideUp();
-                $('#ready').slideDown();
-            } else {
-                $('#wait').slideDown();
-                $('#ready').slideUp();
-                clearState();
+            teamState = valueSnapshot.Teams[teamName];
+            if (teamState != null && valueSnapshot.Teams[teamName][computerName] != null) {
+                comState = valueSnapshot.Teams[teamName][computerName];
+                if (comState.Status) {
+                    passAns = comState.Checkpoint1.password;
+                    $('#wait').slideUp();
+                    $('#ready').slideDown();
+                } else {
+                    $('#wait').slideDown();
+                    $('#ready').slideUp();
+                    clearState();
+                }
+                var puzzleImg = (comState.Checkpoint3.Image != null) ? comState.Checkpoint3.Image : "img/kmitl.png";
+                $("#puzzle-img").attr("src", puzzleImg);
+
+                if (valueSnapshot.Teams[teamName].State != null) {
+                    puzzleState = valueSnapshot.Setups.Puzzles[valueSnapshot.Teams[teamName].State.Puzzle];
+
+                    if (teamState.State.Checkpoint4) {
+                        if (teamState.State.Place == 0) {
+                            var teamPlaces = [];
+                            $.each(valueSnapshot.Teams, function (index, teams) {
+                                teamPlaces.push(teams.State.Place);
+                            });
+                            firebase.database().ref("Teams/" + teamName + "/State/Place").set(teamPlaces.sort()[teamPlaces.length - 1] + 1);
+                        }
+                        changePage("#success");
+                        var placeText = "Loser";
+                        switch (teamState.State.Place) {
+                            case 1 :
+                                placeText = "The Winner!!";
+                                break;
+                            case 2 :
+                                placeText = "2nd";
+                                break;
+                            default:
+                                placeText = teamState.State.Place + "th";
+                        }
+                        $('#place-number').text(placeText);
+                    }
+                }
             }
-            var puzzleImg = (comState.Checkpoint3.Image != null)? comState.Checkpoint3.Image : "img/kmitl.png";
-            $("#puzzle-img").attr("src",puzzleImg);
+
         }
     });
 }
@@ -153,8 +221,11 @@ var clearState = function () {
             Status: false
         }
     };
-    passAns = null;
 
+    teamState = null;
+    puzzleState = null;
+    passAns = null;
+    clearInterval(clickDownInterval);
     if (!comState.status) {
         $('#wait').show();
         $('#ready').hide();
@@ -164,12 +235,14 @@ var clearState = function () {
     }
     clearPass();
     $('#clicker-count').css('height', 0);
+    $('#place-number').text("");
 
 
 }
 //Check Page
 $(document).ready(function () {
     clearState();
+    dbRef();
     $('.screen').hide();
     if (currentPage != "" && currentPage != "#setup-box") {
         changePage(window.location.hash);
