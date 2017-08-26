@@ -7,8 +7,8 @@ var lamp = function(action,number){
     if(number == "all"){
         for(var i = 1 ; i <= 4 ; i++){
             // $.get(domain+"get/"+token+""+deviceName+"led"+1,function (data) {
-            //     console.log(data);
-                $.get(domain+"set/"+token+""+deviceName+"led"+1+"/"+endPoint);
+                console.log(domain+"set/"+token+deviceName+"led"+i+"/"+endPoint);
+                $.get(domain+"set/"+token+deviceName+"led"+i+"/"+endPoint);
             // },"json");
 
         }
