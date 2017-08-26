@@ -1,10 +1,18 @@
+var domain = "https://api.anto.io/channel/";
+var token = "0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/";
+var deviceName = "mypi3/";
+
 var lamp = function(action,number){
     var endPoint = (action == "open")? 1 : 0;
     if(number == "all"){
         for(var i = 1 ; i <= 4 ; i++){
-            $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+i+"/"+endPoint);
+            // $.get(domain+"get/"+token+""+deviceName+"led"+1,function (data) {
+            //     console.log(data);
+                $.get(domain+"set/"+token+""+deviceName+"led"+1+"/"+endPoint);
+            // },"json");
+
         }
     } else {
-        $.get('https://api.anto.io/channel/set/0Hn7DY4cibum3wefePTryjfvRqkfwBRDr3MFhUop/mypi3/led'+number+"/"+endPoint);
+        $.get(domain+"set/"+token+""+deviceName+"led"+number+"/"+endPoint);
     }
 }
