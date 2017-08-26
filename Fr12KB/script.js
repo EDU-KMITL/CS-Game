@@ -116,7 +116,7 @@ var checkTeams = function () {
     var html = "";
     if (teams != null) {
         $.each(teams, function (index, items) {
-            var puzzleAns = (setups.Puzzles[items.State.Puzzle] != null && items.State.Puzzle != null ) ? setups.Puzzles[items.State.Puzzle].Answer : "Not Ready";
+            var puzzleAns = (items.State != null && setups.Puzzles[items.State.Puzzle] != null ) ? setups.Puzzles[items.State.Puzzle].Answer : "Not Ready";
             var led = (items.State != null) ? items.State.Led : null;
             html += "<div class=\"team-detail led-selected-" + led + "\">" +
                 "Name: <b>" + index + "</b>, " +
@@ -131,11 +131,11 @@ var checkTeams = function () {
             }
 
             html += "   Puzzle Answer: " + puzzleAns + ", " +
-                "Member(" + (Object.keys(items).length-1) + "): ";
-            $.each(items,function(jindex,com){
+                "Member(" + (Object.keys(items).length - 1) + "): ";
+            $.each(items, function (jindex, com) {
 
-                if(jindex != "State") {
-                    var userPass = (com.Checkpoint1.password != null && com.Checkpoint1.password != "")? "["+com.Checkpoint1.password+"]" : "";
+                if (jindex != "State") {
+                    var userPass = (com.Checkpoint1.password != null && com.Checkpoint1.password != "") ? "[" + com.Checkpoint1.password + "]" : "";
                     html += jindex + userPass + ", ";
                 }
             });
@@ -149,14 +149,14 @@ var checkTeams = function () {
     }
 }
 
-var removeTeams = function() {
+var removeTeams = function () {
     removeDb('Teams');
-    lamp("close","all");
+    lamp("close", "all");
     firebase.database().ref("/Setups/Game/IsPlaying").set(false);
 }
 
 var resetValues = function () {
-    lamp("close","all");
+    lamp("close", "all");
     var values = {};
     if (teams != null && teams.length != 0) {
         $.each(teams, function (i, team) {
@@ -258,7 +258,7 @@ var startGame = function () {
             $.each(teams, function (i, team) {
                 values[i] = team;
 
-                if(team.State == null){
+                if (team.State == null) {
                     alert("กรุณาเลือกสีของทีมให้เรียบร้อย");
                     isValid = false;
                     return false;
@@ -343,8 +343,8 @@ $(document).ready(function (e) {
         teams = data.Teams;
         checkPuzzle();
         checkTeams();
-        if(setups.Game.IsPlaying){
-            $('#startGame').text("Playing...").attr("disabled",true);
+        if (setups.Game.IsPlaying) {
+            $('#startGame').text("Playing...").attr("disabled", true);
         } else {
             $('#startGame').text("Start Game").removeAttr("disabled");
         }
