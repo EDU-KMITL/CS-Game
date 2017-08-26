@@ -116,7 +116,7 @@ var checkTeams = function () {
     var html = "";
     if (teams != null) {
         $.each(teams, function (index, items) {
-            var puzzleAns = (setups.Puzzles[items.State.Puzzle] != null) ? setups.Puzzles[items.State.Puzzle].Answer : "Not Ready";
+            var puzzleAns = (setups.Puzzles[items.State.Puzzle] != null && items.State.Puzzle != null ) ? setups.Puzzles[items.State.Puzzle].Answer : "Not Ready";
             var led = (items.State != null) ? items.State.Led : null;
             html += "<div class=\"team-detail led-selected-" + led + "\">" +
                 "Name: <b>" + index + "</b>, " +
