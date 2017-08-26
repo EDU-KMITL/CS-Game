@@ -161,7 +161,7 @@ var dbRef = function () {
                 var puzzleImg = (comState.Checkpoint3.Image != null) ? comState.Checkpoint3.Image : "img/kmitl.png";
                 $("#puzzle-img").attr("src", puzzleImg);
 
-                if (valueSnapshot.Teams[teamName].State != null) {
+                if (valueSnapshot.Teams[teamName].State != null && teamState.State != null) {
                     puzzleState = valueSnapshot.Setups.Puzzles[valueSnapshot.Teams[teamName].State.Puzzle];
 
                     if (teamState.State.Checkpoint4) {
