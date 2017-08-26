@@ -9,14 +9,14 @@
 <body>
 <div class="container">
 	
-	<div id="success" onclick="$(this).slideUp();" class="message-text message-success flex">
+	<div id="success" onclick="$(this).slideUp(function(){$(this).remove()});" class="message-text message-success flex">
 	
 	</div>
-	<div id="error" onclick="$(this).slideUp();" class="message-text message-error flex">
+	<div id="error" onclick="$(this).slideUp(function(){$(this).remove()});" class="message-text message-error flex">
 	
 	</div>
 	
-	<div style="text-align: center;">
+	<div style="text-align: center; margin-top: 50px;">
 		<button onclick="if(confirm('คุณต้องการลบทุกทีมอย่างถาวรหรือไม่?')) removeTeams();" class="btn btn-danger"
 		        style="margin: 20px;">Delete All Teams
 		</button>

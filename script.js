@@ -169,6 +169,9 @@ var dbRef = function () {
                             var teamPlaces = [];
                             $.each(valueSnapshot.Teams, function (index, teams) {
                                 teamPlaces.push(teams.State.Place);
+                                $.each(teams[teamName],function(jindex,com){
+                                    firebase.database().ref("Teams/" + teamName + "/"+jindex+"/Checkpoint3/Status").set(true);
+                                })
                             });
                             firebase.database().ref("Teams/" + teamName + "/State/Place").set(teamPlaces.sort()[teamPlaces.length - 1] + 1);
                         }

@@ -73,6 +73,7 @@ div.pass-box{
 .panel{
     background:rgba(255,255,255,0.6);
     border-radius: 0;
+    overflow: hidden;
 }
 .danger{
     color: red;
@@ -109,6 +110,22 @@ section#success{
     background-image: url(img/002.jpg);
 }
 
+section#status{
+    background-image: url(img/008.jpg);
+}
+
+.flex-start{
+    align-self: flex-start;
+}
+
+.left{
+    text-align: left;
+}
+
+.status-title{
+    color: #ffffff;
+}
+
 #clicker-box{
     height: 400px;
     position: relative;
@@ -123,6 +140,13 @@ section#success{
     margin-left: 50px;
     height: 0;
 
+}
+
+.clicker-status{
+    padding: 0.2em;
+    height: 1.7em;
+    background: #f15c22;
+    color: #ffffff;
 }
 
 .user{
@@ -154,3 +178,12 @@ section#success{
     background-color: rgba(255,255,255,0.8);
     padding: 20px;
 }
+
+.winner{
+    display: none;
+    background-color: rgba(255,255,255,0.6);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+

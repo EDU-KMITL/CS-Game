@@ -14,7 +14,14 @@ var config = {
 firebase.initializeApp(config);
 
 var message = function (mg, type) {
-    $('#' + type).clone().text(mg).insertBefore($('#' + type)).slideDown();
+    var mgEle = $('#' + type).clone().text(mg);
+    mgEle.insertBefore($('#' + type)).slideDown(function(){
+        setTimeout(function () {
+            mgEle.slideUp(function(){
+                mgEle.remove();
+            });
+        },5000)
+    });
 }
 
 var success = function (mg) {
@@ -130,8 +137,15 @@ var checkTeams = function () {
                 html += "</button>";
             }
 
+            var memberLength = 0;
+            $.each(items,function(jindex,com){
+                if (jindex != "State") {
+                    memberLength++;
+                }
+            });
+
             html += "   Puzzle Answer: " + puzzleAns + ", " +
-                "Member(" + (Object.keys(items).length - 1) + "): ";
+                "Member(" + memberLength + "): ";
             $.each(items, function (jindex, com) {
 
                 if (jindex != "State") {
